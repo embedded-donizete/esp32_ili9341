@@ -20,7 +20,8 @@ void setup()
   lv_init();
 
 #if LV_USE_TFT_ESPI
-  lv_display_t *disp = lv_tft_espi_create(TFT_HOR_RES, TFT_VER_RES, draw_buf, sizeof(draw_buf));
+  lv_display_t *disp = lv_tft_espi_create(TFT_VER_RES, TFT_HOR_RES, draw_buf, sizeof(draw_buf));
+  lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_90);
 #endif
 
   Serial.println("Setup done");
