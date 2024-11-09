@@ -6,16 +6,11 @@
 #endif
 
 /*Set to your screen resolution*/
-#define TFT_HOR_RES 320
-#define TFT_VER_RES 240
-
-typedef struct
-{
-  TFT_eSPI *tft;
-} lv_tft_espi_t;
+#define WIDTH 240
+#define HEIGHT 320
 
 /*LVGL draw into this buffer, 1/10 screen size usually works well. The size is in bytes*/
-#define DRAW_BUF_SIZE (TFT_HOR_RES * TFT_VER_RES / 10 * (LV_COLOR_DEPTH / 8))
+#define DRAW_BUF_SIZE (HEIGHT * WIDTH / 10 * (LV_COLOR_DEPTH / 8))
 uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 
 static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
@@ -25,8 +20,9 @@ static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
   static uint16_t x, y;
 
   lv_display_t *disp = lv_indev_get_display(indev);
-  lv_tft_espi_t *dsc = (lv_tft_espi_t *)lv_display_get_driver_data(disp);
-  if (dsc->tft->getTouch(&x, &y))
+  void **dsc = (void **)lv_display_get_driver_data(disp);
+  TFT_eSPI *tft = (TFT_eSPI *)*dsc;
+  if (tft->getTouch(&x, &y))
   {
     data->point.x = x;
     data->point.y = y;
@@ -61,10 +57,11 @@ void setup()
 #if LV_USE_TFT_ESPI
   lv_tick_set_cb(my_tick);
 
-  lv_display_t *disp = lv_tft_espi_create(TFT_HOR_RES, TFT_VER_RES, draw_buf, sizeof(draw_buf));
-  lv_tft_espi_t *dsc = (lv_tft_espi_t *)lv_display_get_driver_data(disp);
-  dsc->tft->setRotation(5);
-  lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_90);
+  lv_display_t *disp = lv_tft_espi_create(WIDTH, HEIGHT, draw_buf, sizeof(draw_buf));
+  void **dsc = (void **)lv_display_get_driver_data(disp);
+  lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_270);
+  TFT_eSPI *tft = (TFT_eSPI *)*dsc;
+  tft->setRotation(1);
 
   /* Create and set up at least one display before you register any input devices. */
   lv_indev_t *indev = lv_indev_create();           /* Create input device connected to Default Display. */
@@ -79,5 +76,5 @@ void setup()
 void loop()
 {
   lv_task_handler(); /* let the GUI do its work */
-  delay(5);          /* let this time pass */
+  // delay(5);          /* let this time pass */
 }
