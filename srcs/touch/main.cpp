@@ -1,9 +1,9 @@
 #include <TFT_eSPI.h>
 
-TFT_eSPI tft = TFT_eSPI(240, 320);
-
 #define WIDTH 240
 #define HEIGHT 320
+
+TFT_eSPI tft = TFT_eSPI(WIDTH, HEIGHT);
 
 void setup()
 {

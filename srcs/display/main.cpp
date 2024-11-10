@@ -13,7 +13,6 @@
 #define DRAW_BUF_SIZE (HEIGHT * WIDTH / 10 * (LV_COLOR_DEPTH / 8))
 uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 
-#ifdef TOUCH_CS
 static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
 {
   Serial.println("Pressed");
@@ -34,7 +33,6 @@ static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
     data->state = LV_INDEV_STATE_RELEASED;
   }
 }
-#endif
 
 static void my_log(lv_log_level_t level, const char *buf)
 {
@@ -54,7 +52,7 @@ void setup()
 
 #if LV_USE_LOG
   lv_log_register_print_cb(my_log);
-#endif //LV_USE_LOG
+#endif
 
 #if LV_USE_TFT_ESPI
   lv_tick_set_cb(my_tick);
@@ -65,14 +63,12 @@ void setup()
   TFT_eSPI *tft = (TFT_eSPI *)*dsc;
   tft->setRotation(1);
 
-#if TOUCH_CS
   /* Create and set up at least one display before you register any input devices. */
   lv_indev_t *indev = lv_indev_create();           /* Create input device connected to Default Display. */
   lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER); /* Touch pad is a pointer-like device. */
   lv_indev_set_read_cb(indev, my_input_read);      /* Set driver function. */
-#endif //TOUCH_CS
   lv_demo_widgets();
-#endif //LV_USE_TFT_ESPI
+#endif
 
   Serial.println("Setup done");
 }
@@ -80,5 +76,5 @@ void setup()
 void loop()
 {
   lv_task_handler(); /* let the GUI do its work */
-  delay(5);          /* let this time pass */
+  // delay(5);          /* let this time pass */
 }
