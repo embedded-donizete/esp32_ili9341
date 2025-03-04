@@ -15,6 +15,8 @@ uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 
 static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
 {
+  #ifdef TOUCH_CS
+
   Serial.println("Pressed");
 
   static uint16_t x, y;
@@ -32,6 +34,8 @@ static void my_input_read(lv_indev_t *indev, lv_indev_data_t *data)
   {
     data->state = LV_INDEV_STATE_RELEASED;
   }
+
+  #endif
 }
 
 static void my_log(lv_log_level_t level, const char *buf)
